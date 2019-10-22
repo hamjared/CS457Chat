@@ -84,7 +84,12 @@ void startServer(int portNumber){
     gethostname(hostname, hostNameLength);
 
     struct hostent *hp = gethostbyname(hostname);
-    cout << "Waiting for connection on " << inet_ntoa( *( struct in_addr*)( hp -> h_addr_list[0])) << " port 6324" << "\n";
+    cout << hostname << "\n";
+    cout << "Waiting for connection on " << inet_ntoa( *( struct in_addr*)( hp -> h_addr_list[1])) << " port 6324" << "\n";
+
+    int serverIpAddrSize = sizeof(serverIPAddr);
+    int newSocket = accept(serverSocket_fd, (struct sockaddr *)&serverIPAddr, (socklen_t*)&serverIpAddrSize);
+
 
 
 
@@ -92,6 +97,8 @@ void startServer(int portNumber){
 
 void startClient(int port, int ip){
     cout << "client starting" << "\n";
+
+
 }
 
 int parseIP(string ip){
