@@ -48,52 +48,60 @@ void parseArguments(int argc, char *argv[]){
 
 }
 
-void startServer(int portNumber){
+void startServer(int portNumber) {
     struct sockaddr_in serverIPAddr;
     int opt = 1;
 
-    int serverSocket_fd = socket(AF_INET, SOCK_STREAM, 0 );
+    int serverSocket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (serverSocket_fd == -1){
+    if (serverSocket_fd == -1) {
         //socket creation failed, abort program
         cerr << "Server socket creation failed. Exiting" << "\n";
         exit(0);
     }
-    if (setsockopt(serverSocket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1){
+    if (setsockopt(serverSocket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1) {
         //optional step that aids in avoiding address already in use errors
         cerr << "Server socket creation failed. Exiting" << "\n";
         exit(0);
     }
 
     serverIPAddr.sin_family = AF_INET; // IPV4
-    serverIPAddr.sin_port =htons(portNumber);
+    serverIPAddr.sin_port = htons(portNumber);
     serverIPAddr.sin_addr.s_addr = INADDR_ANY; //listen on all interfaces
-    if (bind(serverSocket_fd, (struct sockaddr*)&serverIPAddr, sizeof serverIPAddr) == -1){
+    if (bind(serverSocket_fd, (struct sockaddr *) &serverIPAddr, sizeof serverIPAddr) == -1) {
         cerr << "Server socket bind failed. Exiting" << "\n";
         exit(0);
     }
 
-    if(listen(serverSocket_fd, 2) == -1){
+    if (listen(serverSocket_fd, 2) == -1) {
         //set server socket to the listening state with a max backlog of 2
         cerr << "Server socket set as listen failed. Exiting" << "\n";
         exit(0);
     }
 
     size_t hostNameLength = 24;
-    char hostname[hostNameLength] ;
+    char hostname[hostNameLength];
     gethostname(hostname, hostNameLength);
 
     struct hostent *hp = gethostbyname(hostname);
 
     int i = 0;
-    while(hp->h_addr_list[i]!= nullptr) {
+    while (hp->h_addr_list[i] != nullptr) {
         cout << "Waiting for connection on " << inet_ntoa(*(struct in_addr *) (hp->h_addr_list[i])) << " port 6324"
              << "\n";
         i++;
     }
 
     int serverIpAddrSize = sizeof(serverIPAddr);
-    int newSocket = accept(serverSocket_fd, (struct sockaddr *)&serverIPAddr, (socklen_t*)&serverIpAddrSize);
+    int newSocket = accept(serverSocket_fd, (struct sockaddr *) &serverIPAddr, (socklen_t * ) & serverIpAddrSize);
+    cout << "Found a friend, you will receive first" << "\n";
+    int valread;
+    char buffer[1024];
+    while (true){
+        //send and receive messages
+        valread = read( newSocket , buffer, 1024);
+        cout << "Friend: " << buffer << "\n";
+    }
 
 
 
