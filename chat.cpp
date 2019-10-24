@@ -105,7 +105,7 @@ void startServer(int portNumber) {
 
 
         message.clear();
-        cout << "Friend: ";
+        cout << "Friend: " << flush;
         valread = read( newSocket , buffer, 1024);
         cout << decode(buffer) << "\n";
 
@@ -168,8 +168,9 @@ void startClient(int port, string ip){
         }
 
         sendall(clientSocket_fd, encode(message).c_str() , encode(message).length());
+        cout << "Friend: " << flush;
         valread = read(clientSocket_fd, buffer, 1024);
-        cout << "Friend: " << decode(buffer) << "\n";
+        cout  << decode(buffer) << "\n";
     }
 }
 
