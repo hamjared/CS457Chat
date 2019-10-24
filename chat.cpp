@@ -12,7 +12,7 @@
 #include <arpa/inet.h>
 #include "chat.h"
 
-int VERSION = 457;
+const int VERSION = 457;
 
 using namespace std;
 
